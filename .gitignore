@@ -1,0 +1,14 @@
+# Projects
+0*/results/
+0*/data/
+
+# Git
+git-deps/*
+
+# Python
+.mypy*
+__pycache__
+
+# OSX
+.DS_Store
+.vscode
