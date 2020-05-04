@@ -43,10 +43,9 @@ class Archive:
         # Quantize
         coords_norm = np.linalg.norm(coords, axis=1, keepdims=True)
         coef = np.minimum(coords_norm, self.r_max) / (coords_norm + 1e-9)
-        coords = coords * coef
-        coords += self.r_max
         bin_limit = 2 * self.r_max / self.nb_bins**0.5
-        coords = np.floor(coords / bin_limit)
+        coords = coords * coef + self.r_max
+        coords = np.array(np.floor(coords / bin_limit))
 
         # Get positions
         # y-axis -> lines

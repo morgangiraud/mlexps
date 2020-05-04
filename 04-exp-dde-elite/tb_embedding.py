@@ -9,8 +9,8 @@ from vae import VQVAE
 
 cfd = os.path.dirname(os.path.realpath(__file__))
 data_dir = os.path.join(cfd, 'data')
-model_dir = os.path.join(cfd, 'models')
 result_dir = os.path.join(cfd, 'results')
+model_dir = os.path.join(result_dir, 'models')
 
 hp_ckpt = torch.load(os.path.join(model_dir, 'hp.pt'))
 vqvae_filename = os.path.join(model_dir, 'vqvae.pt')

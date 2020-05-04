@@ -45,23 +45,25 @@ def create_recon_mut(vae: VQVAE) -> Callable:
     return recon_mut
 
 
-def behaviour_func(x: np.ndarray, links: np.ndarray) -> np.ndarray:
+def behaviour_func(x: np.ndarray,
+                   links: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     assert links.shape[0] == x.shape[1]
     b = np.zeros([x.shape[0], 2])
+    coords = np.zeros([x.shape[0], links.shape[0], 2])
     for i in range(x.shape[1]):
-        c1 = np.cos(links[i] * np.sum(x[:, :i + 1], axis=1))
-        c2 = np.sin(links[i] * np.sum(x[:, :i + 1], axis=1))
-        b[:, 0] = b[:, 0] + c1
-        b[:, 1] = b[:, 1] + c2
+        s = np.sum(x[:, :i + 1], axis=1)
+        b[:, 0] = b[:, 0] + links[i] * np.cos(s)
+        b[:, 1] = b[:, 1] + links[i] * np.sin(s)
+        coords[:, i, 0] = b[:, 0].round(4)
+        coords[:, i, 1] = b[:, 1].round(4)
 
     b = b.round(4)
 
-    return b
+    return b, coords
 
 
 def fitness_func(x: np.ndarray) -> np.ndarray:
-    means = np.mean(x, axis=1, keepdims=True)
-    neg_var = -np.mean((x - means)**2, axis=1)
+    neg_var = -np.var(x, axis=1)
 
     return neg_var
 

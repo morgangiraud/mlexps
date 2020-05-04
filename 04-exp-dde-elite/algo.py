@@ -161,7 +161,7 @@ def map_elite(
     for i in range(nb_iter):
         (parent_x, parent_y), children = mut_op(nb_samples, archive)
 
-        bs = behaviour_f(children, archive.links)
+        bs, coords = behaviour_f(children, archive.links)
         ps = archive.compute_pos(bs)
 
         fs = fitness_f(children)

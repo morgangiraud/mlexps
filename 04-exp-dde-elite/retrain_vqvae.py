@@ -5,8 +5,8 @@ from vae import VQVAE
 
 cfd = os.path.dirname(os.path.realpath(__file__))
 data_dir = os.path.join(cfd, 'data')
-model_dir = os.path.join(cfd, 'models')
 result_dir = os.path.join(cfd, 'results')
+model_dir = os.path.join(result_dir, 'models')
 
 hp_ckpt = torch.load(os.path.join(model_dir, 'hp.pt'))
 archive_d_filename = os.path.join(model_dir, 'archive_d.pt')
@@ -19,7 +19,8 @@ vqvae = VQVAE(
     hp_ckpt["vqvae"]["D"],
     hp_ckpt["vqvae"]["nb_hidden"],
     hp_ckpt["vqvae"]["nb_dim_hidden"],
-    hp_ckpt["vqvae"]["nb_z"]
+    hp_ckpt["vqvae"]["nb_z"],
+    hp_ckpt["vqvae"]["use_rezero"],
 )
 
 vqvae = train_vae(
@@ -30,6 +31,7 @@ vqvae = train_vae(
     hp_ckpt["vqvae"]["nb_z"],
     hp_ckpt["vqvae"]["nb_hidden"],
     hp_ckpt["vqvae"]["nb_dim_hidden"],
+    use_rezero=hp_ckpt["vqvae"]["use_rezero"],
     print_message=True,
     vqvae=vqvae
 )

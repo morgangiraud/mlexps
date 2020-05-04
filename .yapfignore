@@ -1,0 +1,2 @@
+git-deps/**/*.py
+05-exp-self-attention-bottleneck/AttentionAgent/**/*.py'

@@ -86,7 +86,7 @@ class TestBehaviourFunc(unittest.TestCase):
             [-np.pi / 2., np.pi / 2],
         ], dtype=np.float)  # yapf: disable
 
-        output = behaviour_func(x, np.ones(x.shape[1]))
+        output, coords = behaviour_func(x, np.ones(x.shape[1]))
 
         np.testing.assert_almost_equal(
             output, [[2., 0.], [1., 1.], [0., 2.], [1., -1.]]

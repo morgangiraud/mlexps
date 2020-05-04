@@ -45,21 +45,30 @@ endif
 .PHONY: install export_env
 
 typecheck:
-	MYPYPATH=$(CURRENT_DIR)/04-exp-dde-elite mypy $(CURRENT_DIR)/04-exp-dde-elite
+	mypy $(CURRENT_DIR)/04-exp-dde-elite
 
 lint:
 	flake8
 
 yapf:
-	yapf --style tox.ini -r -i --exclude 'git-deps/**/*.py' .
+	yapf --style tox.ini -r -i .
 
 test:
 	pytest 04-exp-dde-elite/
 
 ci: lint typecheck test
 
-.PHONY: typecheck yapf lint test
+.PHONY: typecheck yapf lint test ci
 
 
+# RELEASE
+release:
+# The eval function evaluates a string as if it had been typed into the makefile manually
+# Useful to set Makefile variable inside recipes
+	$(eval EXP_NUMBER := $(shell sh -c 'read -p "Experiment number: " EN; echo $$EN'))
+	$(eval FOLDER := $(shell ls | grep $(EXP_NUMBER)-))
+	zip -r $(FOLDER)/$(FOLDER).zip $(FOLDER)/results
+	$(eval TAG := exp-$(shell echo $(FOLDER) | cut -d'-' -f 1 ))
+	# hub release create -a $(FOLDER)/$(FOLDER).zip -m "results data from experiment $(FOLDER)" $(TAG)
 
-
+.PHONY: release

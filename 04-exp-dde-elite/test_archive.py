@@ -45,7 +45,7 @@ class TestArchive(unittest.TestCase):
             [np.pi / 2., 0.],           # pos 94
             [np.pi / 2., np.pi / 2],    # pos 61
         ])  # yapf: disabled
-        bs = behaviour_func(elites, archive.links)
+        bs, coords = behaviour_func(elites, archive.links)
 
         pos = archive.compute_pos(bs)
 
@@ -64,7 +64,7 @@ class TestArchive(unittest.TestCase):
             [np.pi / 2., np.pi / 2],    # pos 61
         ])  # yapf: disabled
 
-        bs = behaviour_func(elites, archive.links)
+        bs, coords = behaviour_func(elites, archive.links)
         pos = archive.compute_pos(bs)
         f = fitness_func(elites)
         successes = archive.update(elites, pos, f)

@@ -4,6 +4,7 @@
 
 # Git
 git-deps/*
+stubs/*
 
 # Python
 .mypy*
