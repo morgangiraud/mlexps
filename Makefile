@@ -55,6 +55,7 @@ yapf:
 
 test:
 	pytest 04-exp-dde-elite/
+	pytest 05-exp-mdn/
 
 ci: lint typecheck test
 
