@@ -16,9 +16,7 @@ class VectorQuantStraightThrough(nn.Module):
         C = z_e.shape[2]
         assert C == self.D
 
-        pairwise_distances = torch.cdist(
-            z_e.view(-1, C), self._embedding.weight
-        )  # bs*V, 1
+        pairwise_distances = torch.cdist(z_e.view(-1, C), self._embedding.weight)  # bs*V, 1
         indices = torch.argmin(pairwise_distances, dim=1)  # bs*V
 
         z_q = self._embedding(indices)  # bs*V x C
@@ -47,9 +45,7 @@ class ReZeroLinearBlock(nn.Module):
 
 class VQVAE(nn.Module):
     r"""Vector Quantized Variationnal AutoEncoder"""
-    def __init__(
-        self, nb_links, K, D, nb_hidden, nb_dim_hidden, nb_z, use_rezero=False
-    ):
+    def __init__(self, nb_links, K, D, nb_hidden, nb_dim_hidden, nb_z, use_rezero=False):
         super(VQVAE, self).__init__()
 
         self.use_rezero = use_rezero
@@ -57,17 +53,13 @@ class VQVAE(nn.Module):
         # Encoder
         self.input_dim = (None, nb_links)
         self.z_e_size = (nb_z, D)
-        self._encoder = self.build_encoder(
-            self.input_dim, D, nb_hidden, nb_dim_hidden
-        )
+        self._encoder = self.build_encoder(self.input_dim, D, nb_hidden, nb_dim_hidden)
 
         # Quantizer
         self.quant = VectorQuantStraightThrough(K, D)
 
         # Decoder
-        self._decoder = self.build_decoder(
-            self.input_dim, D, nb_hidden, nb_dim_hidden
-        )
+        self._decoder = self.build_decoder(self.input_dim, D, nb_hidden, nb_dim_hidden)
 
         # Prior
         self._p_z = torch.distributions.Categorical(torch.ones(K) / K)
@@ -87,9 +79,7 @@ class VQVAE(nn.Module):
                 layers.append(nn.Linear(previous_dim, nb_dim_hidden))
                 layers.append(nn.ReLU(True))
             previous_dim = nb_dim_hidden
-        layers.append(
-            nn.Linear(previous_dim, self.z_e_size[0] * self.z_e_size[1])
-        )
+        layers.append(nn.Linear(previous_dim, self.z_e_size[0] * self.z_e_size[1]))
 
         encoder = nn.Sequential(*layers)
 
@@ -119,9 +109,7 @@ class VQVAE(nn.Module):
 
         z_q_st, z_q, indices = self.quant(z_e)
 
-        raw_z_q_st = torch.reshape(
-            z_q_st, (-1, self.z_e_size[0] * self.z_e_size[1])
-        )
+        raw_z_q_st = torch.reshape(z_q_st, (-1, self.z_e_size[0] * self.z_e_size[1]))
         x_hat = self._decoder(raw_z_q_st)
 
         return z_e, z_q_st, z_q, x_hat, indices
@@ -141,9 +129,7 @@ class VQVAE(nn.Module):
 
             z_q = self.quant._embedding(latent_code)
 
-            raw_z_q = torch.reshape(
-                z_q, (bs, self.z_e_size[0] * self.z_e_size[1])
-            )
+            raw_z_q = torch.reshape(z_q, (bs, self.z_e_size[0] * self.z_e_size[1]))
             x_hat = self._decoder(raw_z_q)
 
         return x_hat

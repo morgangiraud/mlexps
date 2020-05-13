@@ -17,21 +17,17 @@ class TestArchive(unittest.TestCase):
             [0., 1.],
             [1., 0.],
             [1., 1.], ], dtype=np.float)  # yapf: disable
-        archive.update(
-            elites, np.arange(elites.shape[0]), -np.ones(elites.shape[0])
-        )
+        archive.update(elites, np.arange(elites.shape[0]), -np.ones(elites.shape[0]))
 
         x = archive.sample(2)
         np.testing.assert_array_equal(x, [[1, 1], [1, 0]])
 
         x = archive.sample(5)
-        np.testing.assert_array_equal(
-            x, [
-                [0., 0.],
-                [1., 0.],
-                [0., 1.],
-                [1., 1.], ]
-        )
+        np.testing.assert_array_equal(x, [
+            [0., 0.],
+            [1., 0.],
+            [0., 1.],
+            [1., 1.], ])
 
     def test_compute_pos(self):
         np.random.seed(1)

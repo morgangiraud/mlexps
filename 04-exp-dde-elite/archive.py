@@ -60,15 +60,11 @@ class Archive:
             return np.array([])
 
         nb_samples = min(d.shape[0], nb_samples)
-        idx = np.random.choice(
-            np.arange(d.shape[0]), size=nb_samples, replace=False
-        )
+        idx = np.random.choice(np.arange(d.shape[0]), size=nb_samples, replace=False)
 
         return d[idx]
 
-    def update(
-        self, children: np.ndarray, ps: np.ndarray, fs: np.ndarray
-    ) -> int:
+    def update(self, children: np.ndarray, ps: np.ndarray, fs: np.ndarray) -> int:
         successes = 0
 
         for i in range(children.shape[0]):
@@ -88,9 +84,7 @@ class Archive:
 
     def draw_illuminated_map(self, fullpath: str) -> None:
         clean_min_fit = [x[1] if x is not None else np.nan for x in self.d]
-        d_fit_reshaped = np.reshape(
-            clean_min_fit, [int(self.nb_bins**0.5), int(self.nb_bins**0.5)]
-        )
+        d_fit_reshaped = np.reshape(clean_min_fit, [int(self.nb_bins**0.5), int(self.nb_bins**0.5)])
         final_d = np.flip(d_fit_reshaped, 0)
 
         # Vmin is -0.5 because:

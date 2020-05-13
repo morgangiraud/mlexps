@@ -15,18 +15,12 @@ import numpy as np
 import torch
 from algo import train_vae, map_elite
 from functions import (
-    behaviour_func,
-    fitness_func,
-    create_iso_mut,
-    create_line_mut,
-    create_recon_mut
+    behaviour_func, fitness_func, create_iso_mut, create_line_mut, create_recon_mut
 )
 from archive import Archive
 from bandit_window import BanditWindow
 
-should_continue = input(
-    "This script will delete the results folder, should we continue (y/[n])?"
-)
+should_continue = input("This script will delete the results folder, should we continue (y/[n])?")
 if not (should_continue == 'y'):
     exit(0)
 
@@ -109,9 +103,7 @@ for i in range(nb_dde_elite_gen):
     else:
         raise Exception('mut operator {} unknown'.format(mut_key))
 
-    archive, s = map_elite(
-        behaviour_func, fitness_func, mut_op, archive, nb_iter, nb_samples
-    )
+    archive, s = map_elite(behaviour_func, fitness_func, mut_op, archive, nb_iter, nb_samples)
 
     s_avg = s / (nb_iter * nb_samples)
     bandit.add_result(s_avg, var_idx)

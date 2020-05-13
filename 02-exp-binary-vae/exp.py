@@ -42,16 +42,13 @@ def elbo_loss(x, diag_logvars, noise, z, p):
 
     # p_(z) is a prior distribution over z
     # In general we just use z ~ N(0, I)
-    log_p_z = -0.5 * (
-        bs_log_2pi + torch.matmul(z.unsqueeze(1), z.unsqueeze(-1))
-    ).squeeze()
+    log_p_z = -0.5 * (bs_log_2pi + torch.matmul(z.unsqueeze(1), z.unsqueeze(-1))).squeeze()
     if bs == 1:
         log_p_z = log_p_z.unsqueeze(0)
     assert log_p_z.shape == (bs, )
 
     log_p_theta_x_z = torch.sum(
-        x * torch.log(p + epsilon) + (1 - x) * torch.log(1 - p + epsilon),
-        axis=1
+        x * torch.log(p + epsilon) + (1 - x) * torch.log(1 - p + epsilon), axis=1
     )
     assert log_q_z_x.shape == (bs, )
 
@@ -119,14 +116,11 @@ with neptune.create_experiment(
                         loss.item(),
                         loss_p_z.item(),
                         loss_p_theta_x_z.item(),
-                        loss_q_z_x.item(),
-                    )
+                        loss_q_z_x.item(), )
                 )
             neptune.send_metric('Loss/loss', loss.item())
             neptune.send_metric('Loss/loss_p_z', loss_p_z.item())
-            neptune.send_metric(
-                'Loss/loss_p_theta_x_z', loss_p_theta_x_z.item()
-            )
+            neptune.send_metric('Loss/loss_p_theta_x_z', loss_p_theta_x_z.item())
             neptune.send_metric('Loss/loss_q_z_x', loss_q_z_x.item())
             neptune.send_metric('lr', scheduler.get_lr()[0])
         scheduler.step()
@@ -178,7 +172,5 @@ with neptune.create_experiment(
     Z_avg = torch.cat((z_0, z_1, z_2), 0)
     assert Z_avg.shape == (dataset.shape[0], 3)
 
-    image_path = utils.save_data_picture(
-        Z_avg.detach().numpy(), "average_z.png"
-    )
+    image_path = utils.save_data_picture(Z_avg.detach().numpy(), "average_z.png")
     neptune.send_artifact(image_path)

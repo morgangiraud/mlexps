@@ -68,10 +68,7 @@ def generate_dataset(binary=False):
         MultivariateNormal(torch.tensor([1., -2.]), rand_covariance([2, 2])),
     ]
     cat = Categorical(torch.rand([3]))
-    X = np.array([
-        np.concatenate([ps[c].sample([1]).numpy()[0], [c]])
-        for c in cat.sample([1000])
-    ])
+    X = np.array([np.concatenate([ps[c].sample([1]).numpy()[0], [c]]) for c in cat.sample([1000])])
 
     # Non linear projections into a 100d space
     proj = 3 * np.random.rand(2, 100)

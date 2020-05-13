@@ -45,8 +45,7 @@ def create_recon_mut(vae: VQVAE) -> Callable:
     return recon_mut
 
 
-def behaviour_func(x: np.ndarray,
-                   links: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def behaviour_func(x: np.ndarray, links: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     assert links.shape[0] == x.shape[1]
     b = np.zeros([x.shape[0], 2])
     coords = np.zeros([x.shape[0], links.shape[0], 2])

@@ -11,9 +11,7 @@ from vae import VQVAE
 from functions import perplexity
 
 
-def graph_gradient_norm(
-    model, writer: SummaryWriter, global_step: int, prefix: str = ''
-):
+def graph_gradient_norm(model, writer: SummaryWriter, global_step: int, prefix: str = ''):
     for name, p in model.named_parameters():
         # grad_norm = torch.norm(p.grad)
         # writer.add_scalar(
@@ -23,14 +21,10 @@ def graph_gradient_norm(
         # )
         if re.search('alpha', name):
             writer.add_scalar(name, p, global_step=global_step)
-            writer.add_scalar(
-                '{}.grad'.format(name), p.grad, global_step=global_step
-            )
+            writer.add_scalar('{}.grad'.format(name), p.grad, global_step=global_step)
         else:
             writer.add_histogram(name, p, global_step=global_step)
-            writer.add_histogram(
-                '{}.grad'.format(name), p.grad, global_step=global_step
-            )
+            writer.add_histogram('{}.grad'.format(name), p.grad, global_step=global_step)
 
 
 def train_vae(
@@ -54,27 +48,16 @@ def train_vae(
 
     commitment_cost = 0.25
     dataset = TensorDataset(torch.tensor(elites, dtype=torch.float32))
-    training_loader = DataLoader(
-        dataset, batch_size=batch_size, shuffle=True, pin_memory=True
-    )
+    training_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if not vqvae:
-        vqvae = VQVAE(
-            nb_links,
-            K,
-            D,
-            nb_hidden,
-            nb_dim_hidden,
-            nb_z,
-            use_rezero=use_rezero
-        ).to(device)
+        vqvae = VQVAE(nb_links, K, D, nb_hidden, nb_dim_hidden, nb_z,
+                      use_rezero=use_rezero).to(device)
     else:
         if print_message:
             print('Using existing VQVAE')
     optimizer = torch.optim.Adam(vqvae.parameters(), lr=learning_rate)
-    scheduler = torch.optim.lr_scheduler.StepLR(
-        optimizer, step_size=200, gamma=0.3
-    )
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=200, gamma=0.3)
 
     if print_message:
         cfd = os.path.dirname(os.path.realpath(__file__))
@@ -91,9 +74,7 @@ def train_vae(
             current_lr = scheduler.get_lr()[0]  # type: ignore
             writer.add_scalar('lr', current_lr, global_step=epoch)
             writer.add_embedding(
-                vqvae.quant._embedding.weight,
-                global_step=epoch,
-                tag='vqvae embedding'
+                vqvae.quant._embedding.weight, global_step=epoch, tag='vqvae embedding'
             )
 
         for i_batch, (x, ) in enumerate(training_loader):
@@ -132,9 +113,7 @@ global step: {} -> Loss: {}, recon_loss: {}, embed_loss: {}, perplexity: {}
 
     if print_message:
         writer.add_embedding(
-            vqvae.quant._embedding.weight,
-            global_step=global_step,
-            tag='vqvae embedding'
+            vqvae.quant._embedding.weight, global_step=global_step, tag='vqvae embedding'
         )
         writer.close()
 

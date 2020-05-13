@@ -26,11 +26,7 @@ print(x.grad)  # None
 a = torch.randn(3, 4, 2)
 
 out = torch.cdist(a, e.weight)
-print(
-    "a.shape: {} x e.shape: {} -> out.shape: {}".format(
-        a.shape, e.weight.shape, out.shape
-    )
-)
+print("a.shape: {} x e.shape: {} -> out.shape: {}".format(a.shape, e.weight.shape, out.shape))
 out = torch.argmin(out, dim=2)
 print(out.shape)
 print(out)

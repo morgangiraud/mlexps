@@ -28,17 +28,13 @@ train_set = datasets.MNIST(
     root=data_dir,
     train=True,
     download=True,
-    transform=transforms.Compose([
-        transforms.ToTensor(), transforms.Normalize((0.5, ), (1.0, ))
-    ])
+    transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, ), (1.0, ))])
 )
 test_set = datasets.MNIST(
     root=data_dir,
     train=False,
     download=True,
-    transform=transforms.Compose([
-        transforms.ToTensor(), transforms.Normalize((0.5, ), (1.0, ))
-    ])
+    transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, ), (1.0, ))])
 )
 
 # Training HP
@@ -63,12 +59,8 @@ rnn_num_layers = 2
 commitment_cost = 0.25
 # decay = 0.99
 
-training_loader = DataLoader(
-    train_set, batch_size=batch_size, shuffle=True, pin_memory=True
-)
-validation_loader = DataLoader(
-    test_set, batch_size=32, shuffle=True, pin_memory=True
-)
+training_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, pin_memory=True)
+validation_loader = DataLoader(test_set, batch_size=32, shuffle=True, pin_memory=True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 vqvae = VQVAE(K, D, nb_res_hchannels, rnn_hidden_dim, rnn_num_layers).to(device)
@@ -88,9 +80,7 @@ hp = {
     'rnn_num_layers': 2,
 }
 with neptune.create_experiment(
-    name='03-exp-vq-vae-mnist',
-    description='Learning a Vq VAE and fitting its prior',
-    params=hp
+    name='03-exp-vq-vae-mnist', description='Learning a Vq VAE and fitting its prior', params=hp
 ):
     # Train the VQ-VAE
     for epoch in range(nb_vqvae_epochs):
@@ -122,10 +112,7 @@ with neptune.create_experiment(
                     print(
                         """Loss: {}, recon_loss: {}, \
                             embed_loss: {}, perplexity: {}""".format(
-                            loss.item(),
-                            recon_loss.item(),
-                            embed_loss.item(),
-                            p.item()
+                            loss.item(), recon_loss.item(), embed_loss.item(), p.item()
                         )
                     )
 
@@ -138,12 +125,8 @@ with neptune.create_experiment(
     _, _, _, x_hat, _ = vqvae(x)
     x_img_grid = torchvision.utils.make_grid(x, batch_size // 4)
     x_hat_img_grid = torchvision.utils.make_grid(x_hat, batch_size // 4)
-    torchvision.utils.save_image(
-        x_img_grid, os.path.join(cfd, result_dir, 'x_img_gen.png')
-    )
-    torchvision.utils.save_image(
-        x_hat_img_grid, os.path.join(cfd, result_dir, 'x_hat_img_gen.png')
-    )
+    torchvision.utils.save_image(x_img_grid, os.path.join(cfd, result_dir, 'x_img_gen.png'))
+    torchvision.utils.save_image(x_hat_img_grid, os.path.join(cfd, result_dir, 'x_hat_img_gen.png'))
 
     # Fit the prior
     for epoch in range(nb_prior_epochs):
@@ -158,11 +141,8 @@ with neptune.create_experiment(
             code = vqvae.encode(x).detach()
 
             one_hot = torch.zeros(code.shape[0], code.shape[1], K).to(device)
-            one_hot = one_hot.scatter(
-                2, code.unsqueeze(-1), 1
-            )  # bs x H_l*W_l x K
-            first_input = torch.zeros_like(one_hot[:, 1, :]
-                                           ).unsqueeze(1).to(device)
+            one_hot = one_hot.scatter(2, code.unsqueeze(-1), 1)  # bs x H_l*W_l x K
+            first_input = torch.zeros_like(one_hot[:, 1, :]).unsqueeze(1).to(device)
             lstm_inputs = torch.cat([first_input, one_hot[:, :-1, :]], 1)
 
             logits, _ = vqvae._p_z(lstm_inputs)
@@ -181,6 +161,4 @@ with neptune.create_experiment(
     imgs, latent_code = vqvae.sample(batch_size)
 
     img_grid = torchvision.utils.make_grid(imgs, batch_size // 4)
-    torchvision.utils.save_image(
-        img_grid, os.path.join(cfd, result_dir, 'img_gen.png')
-    )
+    torchvision.utils.save_image(img_grid, os.path.join(cfd, result_dir, 'img_gen.png'))

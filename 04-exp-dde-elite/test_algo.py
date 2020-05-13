@@ -14,9 +14,7 @@ class TestAlgo(unittest.TestCase):
 
         archive = Archive(10)
         elites = np.random.rand(100, archive.nb_links)
-        archive.update(
-            elites, np.arange(elites.shape[0]), -np.ones(elites.shape[0])
-        )
+        archive.update(elites, np.arange(elites.shape[0]), -np.ones(elites.shape[0]))
         nb_epochs = 2
         K = 8
         D = 2
@@ -24,15 +22,7 @@ class TestAlgo(unittest.TestCase):
         nb_hidden = 1
         nb_dim_hidden = 16
 
-        _ = train_vae(
-            nb_epochs,
-            archive.get_elites(),
-            K,
-            D,
-            nb_z,
-            nb_hidden,
-            nb_dim_hidden
-        )
+        _ = train_vae(nb_epochs, archive.get_elites(), K, D, nb_z, nb_hidden, nb_dim_hidden)
 
     def test_map_elite(self):
         np.random.seed(1)
@@ -40,9 +30,7 @@ class TestAlgo(unittest.TestCase):
 
         archive = Archive(10)
         elites = np.random.rand(10, archive.nb_links)
-        archive.update(
-            elites, np.arange(elites.shape[0]), -np.ones(elites.shape[0])
-        )
+        archive.update(elites, np.arange(elites.shape[0]), -np.ones(elites.shape[0]))
 
         sigma = 0.1
         nb_iter = 2

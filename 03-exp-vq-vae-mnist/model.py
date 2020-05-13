@@ -18,9 +18,7 @@ class VectorQuantStraightThrough(nn.Module):
         C = z_e.shape[3]
         assert C == self.D
 
-        pairwise_distances = torch.cdist(
-            z_e.view(-1, C), self._embedding.weight
-        )  # bs*H*W x K
+        pairwise_distances = torch.cdist(z_e.view(-1, C), self._embedding.weight)  # bs*H*W x K
         indices = torch.argmin(pairwise_distances, dim=1)  # bs*H*W x 1
 
         z_q = self._embedding(indices)  # bs*H*W x C
@@ -42,13 +40,7 @@ class ResBlock(nn.Module):
         self.nb_res_hchannels = nb_res_hchannels
         self.block = nn.Sequential(
             nn.ReLU(True),
-            nn.Conv2d(
-                self.in_channels,
-                self.nb_res_hchannels,
-                3,
-                padding=1,
-                bias=False
-            ),
+            nn.Conv2d(self.in_channels, self.nb_res_hchannels, 3, padding=1, bias=False),
             nn.ReLU(True),
             nn.Conv2d(self.nb_res_hchannels, self.in_channels, 1, bias=False),
         )
@@ -68,12 +60,7 @@ class AutoRegressive(nn.Module):
         self.hidden_dim = hidden_dim
         self.K = K
         self.num_layers = num_layers
-        self.lstm = nn.LSTM(
-            self.K,
-            self.hidden_dim,
-            num_layers=self.num_layers,
-            batch_first=True
-        )
+        self.lstm = nn.LSTM(self.K, self.hidden_dim, num_layers=self.num_layers, batch_first=True)
         hidden0 = torch.zeros(self.num_layers, 1, self.hidden_dim).to(device)
         h_init = torch.nn.Parameter(hidden0, requires_grad=True)
         c_init = torch.nn.Parameter(hidden0, requires_grad=True)
@@ -82,21 +69,15 @@ class AutoRegressive(nn.Module):
         self.proj_out = nn.Sequential(
             nn.Linear(self.hidden_dim, self.K),
             nn.ReLU(True),
-            nn.Linear(self.K, self.K),
-        )
+            nn.Linear(self.K, self.K), )
 
     def forward(self, seq, h_state=None):
         bs = seq.shape[0]
         if h_state is None:
-            h_state = (
-                self._init_state[0].repeat(1, bs, 1),
-                self._init_state[1].repeat(1, bs, 1)
-            )
+            h_state = (self._init_state[0].repeat(1, bs, 1), self._init_state[1].repeat(1, bs, 1))
 
         lstm_out, h_state = self.lstm(seq, h_state)
-        logits = self.proj_out(
-            lstm_out.reshape(bs * seq.shape[1], self.hidden_dim)
-        )
+        logits = self.proj_out(lstm_out.reshape(bs * seq.shape[1], self.hidden_dim))
 
         return logits.view(bs, seq.shape[1], self.K), h_state
 
@@ -205,8 +186,7 @@ class VQVAE(nn.Module):
                 if latent_code is None:
                     latent_code = indice.unsqueeze(1)
                 else:
-                    latent_code = torch.cat([latent_code, indice.unsqueeze(1)],
-                                            1)
+                    latent_code = torch.cat([latent_code, indice.unsqueeze(1)], 1)
             imgs = self.decode(latent_code)
 
         return imgs, latent_code

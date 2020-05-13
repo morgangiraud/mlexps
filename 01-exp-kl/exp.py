@@ -21,12 +21,8 @@ cfd = os.path.dirname(os.path.realpath(__file__))
 results_dir = os.path.join(cfd, 'results')
 
 ap = argparse.ArgumentParser()
-ap.add_argument(
-    "--type", required=False, default="rsum", help="Spanning strategy"
-)
-ap.add_argument(
-    "--span", required=False, default="both", help="Spanning strategy"
-)
+ap.add_argument("--type", required=False, default="rsum", help="Spanning strategy")
+ap.add_argument("--span", required=False, default="both", help="Spanning strategy")
 args = vars(ap.parse_args())
 
 # Some matplotlib tooling
@@ -47,8 +43,7 @@ def kl_loss_rsum(dist_q, dist_p, data, delta):
     Z_q = (dist_q.stddev * np.sqrt(2 * np.pi))
     q = 1 / Z_q * torch.exp(-0.5 * q_data)
 
-    log_dist_ratio = torch.log(dist_p.stddev / dist_q.stddev
-                               ) - 0.5 * (q_data - p_data)
+    log_dist_ratio = torch.log(dist_p.stddev / dist_q.stddev) - 0.5 * (q_data - p_data)
 
     return torch.sum(q * log_dist_ratio * delta)
 
@@ -170,11 +165,7 @@ with neptune.create_experiment(
         neptune.send_metric('w_sigma', w_sigma.item())
 
         if i % 10 == 0:
-            print(
-                "loss: {}, w_mu: {}, w_sigma:{}".format(
-                    loss.item(), w_mu.item(), w_sigma.item()
-                )
-            )
+            print("loss: {}, w_mu: {}, w_sigma:{}".format(loss.item(), w_mu.item(), w_sigma.item()))
 
             plt.clf()
             sns.distplot(dist_p.sample([N]).numpy(), label="dist_p")

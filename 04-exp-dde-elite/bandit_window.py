@@ -26,8 +26,7 @@ class BanditWindow(object):
         s = np.zeros((1, self._nb_choice))
         s[0, selection_idx] = 1
         if self._selections.shape[0] >= self._window_size:
-            self._selections = np.concatenate([self._selections[1:, :], s],
-                                              axis=0)
+            self._selections = np.concatenate([self._selections[1:, :], s], axis=0)
         else:
             self._selections = np.concatenate([self._selections, s], axis=0)
 
@@ -45,6 +44,4 @@ class BanditWindow(object):
         return logits
 
     def __str__(self):
-        return "successes: {}, selections: {}".format(
-            self._successes, self._total_selections
-        )
+        return "successes: {}, selections: {}".format(self._successes, self._total_selections)

@@ -65,20 +65,14 @@ while e_cos.shape[0] > 0:
     e_weight = e_weight[to_keep]
 
 e_order_vec_norm = torch.norm(e_order, dim=1, keepdim=True)  # N_e x 1
-d_order_cos = torch.matmul(e_order, e_order.T) / torch.matmul(
-    e_order_vec_norm, e_order_vec_norm.T
-)
+d_order_cos = torch.matmul(e_order, e_order.T) / torch.matmul(e_order_vec_norm, e_order_vec_norm.T)
 
-print(
-    """
+print("""
 Number of groups: {}
 Group sizes: {}
-""".format(len(group_size), group_size)
-)
+""".format(len(group_size), group_size))
 ax = sns.heatmap(d_order_cos.detach().numpy(), vmin=-1, vmax=1)
-ax.get_figure().savefig(
-    os.path.join(model_dir, 'embedding_cosine_simi_ordered.png')
-)
+ax.get_figure().savefig(os.path.join(model_dir, 'embedding_cosine_simi_ordered.png'))
 plt.clf()
 
 # Check dimension 1

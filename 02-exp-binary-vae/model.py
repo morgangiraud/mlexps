@@ -43,9 +43,7 @@ class VAE(nn.Module):
         mus = x[:, :2]  # bs x 2
         diag_logvars = x[:, 2:4]  # bs x 2
         L_prime = x[:, 4:].view(-1, 2, 2)  # bs x 2 x 2
-        L = self.L_mask * L_prime + torch.diag_embed(
-            torch.exp(0.5 * diag_logvars)
-        )  # bs x 2 x 2
+        L = self.L_mask * L_prime + torch.diag_embed(torch.exp(0.5 * diag_logvars))  # bs x 2 x 2
 
         return [mus, diag_logvars, L]
 

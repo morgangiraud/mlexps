@@ -47,9 +47,7 @@ class TestBanditWindow(unittest.TestCase):
         b.add_result(res1, s_idx1)
 
         logits = b.get_logits()
-        probs = np.exp(logits - np.max(logits)) / np.sum(
-            np.exp(logits - np.max(logits))
-        )
+        probs = np.exp(logits - np.max(logits)) / np.sum(np.exp(logits - np.max(logits)))
         np.testing.assert_almost_equal(probs, [0.0, 1.0], 2)
 
         res2 = 7
