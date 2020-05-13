@@ -32,3 +32,7 @@ A way to initialize your learning rate. Compute the curvature at initilization a
 ## Weight normalization
 Micro-batch training (1 datum per batch) can pose problems for training. [Weight standardization](https://github.com/joe-siyuan-qiao/WeightStandardization) used with [Group Normalization](https://arxiv.org/abs/1803.08494) solved those problems
 (the statistics of the weights are computer over c_in x w_k x h_k)
+
+
+## Engineering
+[Data echoing](https://ai.googleblog.com/2020/05/speeding-up-neural-network-training.html) to alleviate your input data pipeline latency.
